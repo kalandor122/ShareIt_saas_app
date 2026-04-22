@@ -1,4 +1,4 @@
-# ShareIt - Uber az internethez
+# ShareIt - Otio 35.
 
 ShareIt is a P2P internet sharing platform built with [Wasp](https://wasp.sh), based on the [Open SaaS](https://opensaas.sh) template.
 
