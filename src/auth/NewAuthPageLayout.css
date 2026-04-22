@@ -1,0 +1,155 @@
+:root {
+  --navy:   #0d1b3e;
+  --lime:   #f1ea05;
+  --coral:  #ff5c5c;
+  --sky:    #4ac8ff;
+  --mint:   #3dffc0;
+  --orange: #ff9f43;
+  --pink:   #ff6bda;
+}
+
+._orContinueWith_1jwx1_1{
+  display: none;
+}
+
+._socialButton_u0g47_7{
+  border-radius: 12px !important;
+
+}
+
+
+.auth-page-wrapper {
+  font-family: 'Nunito', sans-serif;
+  background: var(--navy);
+  color: white;
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+/* ── ORBS ── */
+.orb { position:absolute; border-radius:50%; pointer-events:none; z-index:0; }
+.of { opacity:0.1; }
+.os { background:transparent !important; opacity:0.15; border:2px solid; }
+
+@keyframes fa { 0%,100%{transform:translateY(0)}  50%{transform:translateY(-20px)} }
+@keyframes fb { 0%,100%{transform:translateY(0)}  50%{transform:translateY(18px)} }
+.oa { animation:fa 8s ease-in-out infinite; }
+.ob { animation:fb 10s ease-in-out infinite; }
+
+/* ── AUTH CARD ── */
+.auth-card {
+  position: relative;
+  z-index: 1;
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 48px;
+  border-radius: 32px;
+  width: 100%;
+  max-width: 450px;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.4);
+  animation: authPopIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+}
+
+@keyframes authPopIn { from{opacity:0;transform:scale(0.95) translateY(20px)} to{opacity:1;transform:scale(1) translateY(0)} }
+
+/* ── WASP AUTH FORM OVERRIDES ── */
+/* 
+  Since Wasp generates its own CSS for Auth forms, we target the elements 
+  using specific selectors to theme them to our dark navy / glass style.
+*/
+
+.auth-card h2 {
+  font-size: 2rem !important;
+  font-weight: 900 !important;
+  color: white !important;
+  margin-bottom: 32px !important;
+  text-align: center !important;
+}
+
+.auth-card label {
+  color: rgba(255,255,255,0.7) !important;
+  font-size: 0.85rem !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1px !important;
+}
+
+.auth-card input {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 12px !important;
+  color: white !important;
+  padding: 12px 16px !important;
+  transition: border-color 0.2s, background 0.2s !important;
+}
+
+.auth-card input:focus {
+  outline: none !important;
+  border-color: var(--lime) !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+}
+
+.auth-card button[type="submit"] {
+  background: var(--lime) !important;
+  color: var(--navy) !important;
+  font-weight: 900 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1px !important;
+  border-radius: 50px !important;
+  padding: 14px !important;
+  margin-top: 24px !important;
+  transition: transform 0.2s, box-shadow 0.2s !important;
+  border: none !important;
+  box-shadow: 0 8px 24px rgba(241, 234, 5, 0.3) !important;
+}
+
+.auth-card button[type="submit"]:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 12px 32px rgba(241, 234, 5, 0.5) !important;
+}
+
+/* Auth links styling */
+.auth-links-container {
+  margin-top: 32px;
+  text-align: center;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  padding-top: 24px;
+}
+
+.auth-link-text {
+  font-size: 0.9rem;
+  color: rgba(255,255,255,0.5);
+  display: block;
+  margin-bottom: 8px;
+}
+
+.auth-logo{
+  width: 120px;
+  margin: 0 auto 0px auto;
+}
+
+.auth-link-text a {
+  color: var(--sky);
+  font-weight: 700;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.auth-link-text a:hover {
+  color: var(--lime);
+  text-decoration: underline;
+}
+
+/* Social buttons (Google etc) if enabled */
+.auth-card [data-testid="social-auth-buttons"] button {
+  background: white !important;
+  border-radius: 12px !important;
+  color: var(--navy) !important;
+  font-weight: 800 !important;
+}

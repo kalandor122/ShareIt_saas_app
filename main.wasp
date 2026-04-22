@@ -1,0 +1,200 @@
+app ShareIt {
+  wasp: {
+    version: "^0.21.0"
+  },
+
+  title: "Uber az internethez",
+
+  head: [
+    "<link rel='icon' href='/favicon.ico' />",
+
+    "<meta name='description' content='Uber az internethez' />",
+    "<meta name='author' content='ShareNet' />",
+    "<meta name='keywords' content='internet, uber, p2p' />",
+
+    "<meta property='og:type' content='website' />",
+    "<meta property='og:title' content='ShareNet' />",
+    "<meta property='og:site_name' content='ShareNet' />",
+    "<meta property='og:url' content='https://shareit.magor-lab.hu' />",
+    "<meta property='og:description' content='Your apps main description and features.' />",
+    "<meta property='og:image' content='https://your-saas-app.com/public-banner.webp' />",
+    "<meta name='twitter:image' content='https://your-saas-app.com/public-banner.webp' />",
+    "<meta name='twitter:image:width' content='800' />",
+    "<meta name='twitter:image:height' content='400' />",
+    "<meta name='twitter:card' content='summary_large_image' />",
+    "<link href='https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,700;0,800;0,900;1,800&family=Space+Mono:wght@400;700&display=swap' rel='stylesheet' />",
+    // TODO: You can put your Plausible analytics scripts below (https://docs.opensaas.sh/guides/analytics/):
+    // NOTE: Plausible does not use Cookies, so you can simply add the scripts here.
+    // Google, on the other hand, does, so you must instead add the script dynamically
+    // via the Cookie Consent component after the user clicks the "Accept" cookies button.
+    "<script defer data-domain='<your-site-id>' src='https://plausible.io/js/script.js'></script>",  // for production
+    "<script defer data-domain='<your-site-id>' src='https://plausible.io/js/script.local.js'></script>",  // for development
+  ],
+
+  // 🔐 Auth out of the box! https://wasp.sh/docs/auth/overview
+  auth: {
+    userEntity: User,
+    methods: {
+      // NOTE: If you decide to not use email auth, make sure to also delete the related routes and pages below.
+      //   (RequestPasswordReset(Route|Page), PasswordReset(Route|Page), EmailVerification(Route|Page))
+      email: {
+        fromField: {
+          name: "ShareNET email confirmation",
+          email: "login@magor-lab.hu"
+        },
+        emailVerification: {
+          clientRoute: EmailVerificationRoute,
+          getEmailContentFn: import { getVerificationEmailContent } from "@src/auth/email-and-pass/emails",
+        },
+        passwordReset: {
+          clientRoute: PasswordResetRoute,
+          getEmailContentFn: import { getPasswordResetEmailContent } from "@src/auth/email-and-pass/emails",
+        },
+        userSignupFields: import { getEmailUserFields } from "@src/auth/userSignupFields",
+      },
+      // Uncomment to enable Google Auth (check https://wasp.sh/docs/auth/social-auth/google for setup instructions):
+     google: { // Guide for setting up Auth via Google
+        userSignupFields: import { getGoogleUserFields } from "@src/auth/userSignupFields",
+        configFn: import { getGoogleAuthConfig } from "@src/auth/userSignupFields",
+      },
+      // Uncomment to enable GitHub Auth (check https://wasp.sh/docs/auth/social-auth/github for setup instructions):
+      // gitHub: {
+      //   userSignupFields: import { getGitHubUserFields } from "@src/auth/userSignupFields",
+      //   configFn: import { getGitHubAuthConfig } from "@src/auth/userSignupFields",
+      // },
+      // Uncomment to enable Discord Auth (check https://wasp.sh/docs/auth/social-auth/discord for setup instructions):
+      // discord: {
+      //   userSignupFields: import { getDiscordUserFields } from "@src/auth/userSignupFields",
+      //   configFn: import { getDiscordAuthConfig } from "@src/auth/userSignupFields"
+      // }
+    },
+    onAuthFailedRedirectTo: "/login",
+    onAuthSucceededRedirectTo: "/home",
+  },
+
+  db: {
+    // Run `wasp db seed` to seed the database with the seed functions below:
+    seeds: [
+      // Populates the database with a bunch of fake users to work with during development.
+      import { seedMockUsers } from "@src/server/scripts/dbSeeds",
+    ]
+  },
+
+  client: {
+    rootComponent: import App from "@src/client/App",
+  },
+
+  emailSender: {
+    // NOTE: "Dummy" provider is just for local development purposes.
+    //   Make sure to check the server logs for the email confirmation url (it will not be sent to an address)!
+    //   Once you are ready for production, switch to e.g. "SendGrid" or "Mailgun" providers. Check out https://docs.opensaas.sh/guides/email-sending/ .
+    provider: SendGrid,
+    defaultFrom: {
+      name: "ShareIt email confirmation",
+      // When using a real provider, e.g. SendGrid, you must use the same email address that you configured your account to send out emails with!
+      email: "login@magor-lab.hu"
+    },
+  },
+}
+
+
+//#region Auth Pages
+route LoginRoute { path: "/login", to: LoginPage }
+page LoginPage {
+  component: import Login from "@src/auth/NewLoginPage"
+}
+
+route SignupRoute { path: "/signup", to: SignupPage }
+page SignupPage {
+  component: import { NewSignup } from "@src/auth/NewSignupPage"
+}
+
+route RequestPasswordResetRoute { path: "/request-password-reset", to: RequestPasswordResetPage }
+page RequestPasswordResetPage {
+  component: import { RequestPasswordResetPage } from "@src/auth/email-and-pass/RequestPasswordResetPage",
+}
+
+route PasswordResetRoute { path: "/password-reset", to: PasswordResetPage }
+page PasswordResetPage {
+  component: import { PasswordResetPage } from "@src/auth/email-and-pass/PasswordResetPage",
+}
+
+route EmailVerificationRoute { path: "/email-verification", to: EmailVerificationPage }
+page EmailVerificationPage {
+  component: import { EmailVerificationPage } from "@src/auth/email-and-pass/EmailVerificationPage",
+}
+//#endregion
+
+//#region User
+
+route homepageroute { path: "/home", to: homepage }
+page homepage {
+  authRequired: true,
+  component: import Dashboard from "@src/client/DashboardPage"
+}
+
+
+route RootRoute { path: "/", to: LandingPage }
+page LandingPage {
+  component: import LandingPage from "@src/landing-page/LandingPage"
+}
+
+route AccountRoute { path: "/account", to: AccountPage }
+page AccountPage {
+  authRequired: true,
+  component: import Account from "@src/user/AccountPage"
+}
+
+query getPaginatedUsers {
+  fn: import { getPaginatedUsers } from "@src/user/operations",
+  entities: [User]
+}
+
+action updateIsUserAdminById {
+  fn: import { updateIsUserAdminById } from "@src/user/operations",
+  entities: [User]
+}
+//#endregion
+
+
+
+//#region Payment
+route PricingPageRoute { path: "/pricing", to: PricingPage }
+page PricingPage {
+  component: import PricingPage from "@src/payment/NewPricingPage"
+}
+
+route CheckoutResultRoute { path: "/checkout", to: CheckoutResultPage }
+page CheckoutResultPage {
+  authRequired: true,
+  component: import CheckoutResultPage from "@src/payment/CheckoutResultPage"
+}
+
+query getCustomerPortalUrl {
+  fn: import { getCustomerPortalUrl } from  "@src/payment/operations",
+  entities: [User]
+}
+
+action deductUserCredits {
+  fn: import { deductUserCredits } from "@src/user/operations",
+  entities: [User]
+}
+
+action connectInternet {
+  fn: import { connectInternet } from "@src/user/operations",
+  entities: [User]
+}
+
+action generateCheckoutSession {
+  fn: import { generateCheckoutSession } from "@src/payment/operations",
+  entities: [User]
+}
+
+api paymentsWebhook {
+  fn: import { paymentsWebhook } from "@src/payment/webhook",
+  entities: [User],
+  middlewareConfigFn: import { paymentsMiddlewareConfigFn } from "@src/payment/webhook",
+  httpRoute: (POST, "/payments-webhook")
+}
+//#endregion
+

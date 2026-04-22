@@ -1,0 +1,38 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id                        String          @id @default(uuid())
+  createdAt                 DateTime        @default(now())
+
+  email                     String?         @unique
+  username                  String?         @unique
+  isAdmin                   Boolean         @default(false)
+
+  paymentProcessorUserId    String?         @unique
+// You can delete this if you're not using Lemon Squeezy as your payments processor.
+  subscriptionStatus        String?         // 'active', 'cancel_at_period_end', 'past_due', 'deleted'
+  subscriptionPlan          String?         // 'hobby', 'pro'
+  datePaid                  DateTime?
+  credits                   Float            @default(0.0)
+
+}
+
+
+model ContactFormMessage {
+  id                        String          @id @default(uuid())
+  createdAt                 DateTime        @default(now())
+
+  user                      User            @relation(fields: [userId], references: [id])
+  userId                    String
+
+  content                   String
+  isRead                    Boolean         @default(false)
+  repliedAt                 DateTime?
+}
